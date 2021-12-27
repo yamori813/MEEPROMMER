@@ -11,6 +11,7 @@ SimpleJBurn/build/
 *.exe
 *.o
 *.so
+.pio
 
 # Packages #
 ############
