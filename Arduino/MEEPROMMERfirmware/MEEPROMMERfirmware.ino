@@ -495,8 +495,8 @@ void setup() {
   pinMode(WE, OUTPUT);
 
   //set speed of serial connection
-  //Serial.begin(57600);
-  Serial.begin(115200);
+  Serial.begin(57600);
+  //Serial.begin(115200);
 }
 
 /**
