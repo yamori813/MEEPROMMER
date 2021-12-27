@@ -33,6 +33,8 @@ task.add_argument('-v', '--verify', dest="cmd", action="store_const",
         const="verify", help='Compare EPROM with file')
 task.add_argument('-V', '--version', dest="cmd", action="store_const",
         const="version", help='Check burner version')
+task.add_argument('-S', '--signature', dest="cmd", action="store_const",
+        const="signature", help='Check EPROM Electonic Signature (set A9 to 12V)')
 
 parser.add_argument('-a', '--address', action='store', default='0',
         help='Starting eeprom address (as hex), default 0')
@@ -49,11 +51,6 @@ parser.add_argument('-c', '--com', action='store',
         default='COM3', help='Com port address')
 parser.add_argument('-s', '--speed', action='store',
         type=int, default='57600', help='Com port baud, default 57600')
-
-def list_ports():
-    from serial.tools import list_ports
-    for x in list_ports.comports():
-        print(x[0], x[1])
 
 def dump_file():
     ser.flushInput()
@@ -153,6 +150,13 @@ def version():
     ser.write(bytes("V 0000 0000 00\n", 'ascii'))
     print(ser.readline())
 
+def signature():
+    print("EPROM Signature:")
+    ser.flushInput()
+    ser.write(bytes("S 0000 0000 00\n", 'ascii'))
+    sig = ser.read(2)
+    print(format(sig[0],'02x')+" "+format(sig[1],'02x'))
+
 args = parser.parse_args()
 #convert our hex strings to ints
 args.address = int(args.address,16)
@@ -183,6 +187,8 @@ elif args.cmd == 'list':
     list_ports()
 elif args.cmd == 'version':
     version()
+elif args.cmd == 'signature':
+    signature()
 
 ser.close()
 sys.exit(0)

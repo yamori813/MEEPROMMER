@@ -59,6 +59,7 @@ unsigned int lineLength,dataLength;
 #define NOCOMMAND    0
 #define VERSION      1
 #define SET_ADDRESS  2
+#define SIGNATURE    3
 
 #define READ_HEX    10
 #define READ_BIN    11
@@ -331,6 +332,9 @@ byte parseCommand() {
   case 'V':
     retval = VERSION; 
     break;
+  case 'S':
+    retval = SIGNATURE;
+    break;
   default:
     retval = NOCOMMAND;
     break;
@@ -546,6 +550,9 @@ void loop() {
     break;
   case VERSION:
     Serial.println(VERSIONSTRING);
+    break;
+  case SIGNATURE:
+    read_binblock(0,1);
     break;
   default:
     break;    
