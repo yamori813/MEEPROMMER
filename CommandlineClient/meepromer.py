@@ -17,7 +17,7 @@ import serial, sys, argparse, time
 
 devlist = [
 	["0104","AMD","AM27256"],
-	["010E","MD","AM27C010"],
+	["010E","AMD","AM27C010"],
 	["0110","AMD","AM27C256"],
 	["0115","AMD","AM27C64"],
 	["0116","AMD","AM27C128"],
