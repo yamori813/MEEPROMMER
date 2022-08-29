@@ -165,7 +165,9 @@ task.add_argument('-v', '--verify', dest="cmd", action="store_const",
 task.add_argument('-V', '--version', dest="cmd", action="store_const",
         const="version", help='Check burner version')
 task.add_argument('-S', '--signature', dest="cmd", action="store_const",
-        const="signature", help='Check EPROM Electonic Signature (set A9 to 12V)')
+        const="signature", help='Get EPROM Electonic Signature (set A9 to 12V)')
+task.add_argument('-e', '--erace', dest="cmd", action="store_const",
+        const="erace", help='Erace check to EPROM')
 
 parser.add_argument('-a', '--address', action='store', default='0',
         help='Starting eeprom address (as hex), default 0')
@@ -292,6 +294,23 @@ def signature():
       if id == dev[0]:
         print(dev[1] + " " + dev[2])
 
+def erace_check():
+    print("EPROM erace check:")
+    ser.flushInput()
+    ser.write(bytes("r "+format(args.address,'04x')+" "+
+        format(args.bytes*1024,'04x')+" 10\n", 'ascii'))
+    print(bytes("r "+format(args.address,'04x')+" "+
+        format(args.bytes*1024,'04x')+" 10\n", 'ascii'))
+    eeprom = ser.read(args.bytes*1024)
+    if(ser.read(1) != b'\0'):
+        print("Error: no Ack")
+        #sys.exit(1)
+    for b in eeprom:
+        if(b != 255):
+          print("Erace error")
+          sys.exit(1)
+    print("Erace Ok")
+
 args = parser.parse_args()
 #convert our hex strings to ints
 args.address = int(args.address,16)
@@ -324,6 +343,8 @@ elif args.cmd == 'version':
     version()
 elif args.cmd == 'signature':
     signature()
+elif args.cmd == 'erace':
+    erace_check()
 
 ser.close()
 sys.exit(0)
