@@ -261,10 +261,10 @@ def write_eeprom(paged):
         print("Writing from",format(args.address+i*256,'04x'),
               "to",format(args.address+i*256+255,'04x'))
         if paged:
-            ser.write(bytes("W "+format(args.address+i*256,'04x')+
+            ser.write(bytes("w "+format(args.address+i*256,'04x')+
                 " 0100 "+format(args.page_size,'02x')+"\n",'ascii'))
         else:
-            ser.write(bytes("W "+format(args.address+i*256,'04x')+
+            ser.write(bytes("w "+format(args.address+i*256,'04x')+
                 " 0100 00\n",'ascii'))
 
         ser.flushInput()
