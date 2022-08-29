@@ -14,7 +14,7 @@
  *
  **/
 
-#define VERSIONSTRING "MEEPROMMER $Revision: 1.2 $ $Date: 2013/05/05 11:01:54 $, CMD:R,r,w,W,V,S"
+#define VERSIONSTRING "MEEPROMMER $Revision: 1.2 $ $Date: 2013/05/05 11:01:54 $, CMD:R,r,w,V,S"
 
 // shiftOut part
 #define DS      A0
@@ -63,11 +63,9 @@ unsigned int lineLength,dataLength;
 
 #define READ_HEX    10
 #define READ_BIN    11
-#define READ_ITL    12
 
 #define WRITE_HEX   20
 #define WRITE_BIN   21
-#define WRITE_ITL   22
 
 
 /*****************************************************************
@@ -531,8 +529,6 @@ void loop() {
     endAddress = startAddress + dataLength -1;
     read_binblock(startAddress,endAddress);
     break;
-  case READ_ITL:
-    break;
   case WRITE_BIN:
     //take care for max buffer size
     if(dataLength > 1024) dataLength = 1024;
@@ -545,8 +541,6 @@ void loop() {
     
     break;
   case WRITE_HEX:
-    break;
-  case WRITE_ITL:
     break;
   case VERSION:
     Serial.println(VERSIONSTRING);
