@@ -113,7 +113,6 @@ byte read_data_bus()
 
 }
 
-
 //write a byte to the data bus
 //be sure to set data_bus to output before
 void write_data_bus(byte data)
@@ -216,7 +215,6 @@ byte read_byte(unsigned int address)
 
 }
 
-
 //highlevel function to write a byte to a given address
 //this function uses /DATA polling to get the end of the
 //write cycle. This is much faster then waiting 10ms
@@ -266,8 +264,6 @@ void fast_write(unsigned int address, byte data)
   set_ce(HIGH);
 
 }
-
-
 
 /************************************************
  *
@@ -384,13 +380,11 @@ unsigned int hexWord(char* data) {
     (hexDigit(data[3]))); 
 }
 
-
 /************************************************
  *
  * INPUT / OUTPUT Functions
  *
  *************************************************/
-
 
 /**
  * read a data block from eeprom and write out a hex dump 
@@ -452,7 +446,6 @@ void write_block(unsigned int address, byte* buffer, int len) {
   }   
 }
 
-
 /**
  * print out a 16 bit word as 4 character hex value
  **/
@@ -471,10 +464,6 @@ void printByte(byte data) {
   if(data < 0x10) Serial.print("0");
   Serial.print(data, HEX);  
 }
-
-
-
-
 
 /************************************************
  *
@@ -552,10 +541,4 @@ void loop() {
     break;    
   }
 
-
 }
-
-
-
-
-
