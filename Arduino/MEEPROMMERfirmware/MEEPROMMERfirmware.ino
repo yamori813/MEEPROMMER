@@ -303,9 +303,9 @@ byte parseCommand() {
   cmdbuf[1]  = 0;
   //second string is startaddress (4 bytes)
   cmdbuf[6]  = 0;
-  //third string is endaddress (4 bytes)
+  //third string is datalength (4 bytes)
   cmdbuf[11] = 0;
-  //fourth string is length (2 bytes)
+  //fourth string is linelength (2 bytes)
   cmdbuf[14] = 0;
   startAddress=hexWord((cmdbuf+2));
   dataLength=hexWord((cmdbuf+7));
