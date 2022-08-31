@@ -305,11 +305,14 @@ def erace_check():
     if(ser.read(1) != b'\0'):
         print("Error: no Ack")
         #sys.exit(1)
+    noe = 0
     for b in eeprom:
         if(b != 255):
-          print("Erace error")
-          sys.exit(1)
-    print("Erace Ok")
+          noe = noe + 1;
+    if (noe != 0):
+        print("Erace error " + str(noe))
+    else:
+        print("Erace Ok")
 
 args = parser.parse_args()
 #convert our hex strings to ints
