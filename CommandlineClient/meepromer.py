@@ -171,9 +171,6 @@ parser.add_argument('-o', '--offset', action='store', default='0',
         help='Input file offset (as hex), default 0')
 parser.add_argument('-b', '--bytes', action='store', default='32',
         type=int, help='Number of kBytes to r/w, default 32')
-parser.add_argument('-p', '--page_size', action='store', default='256',
-        type=int, help='Number of bytes per EPROM page e.g.:'+
-            'CAT28C*=32, AT28C*=64, X28C*=64, default 32')
 parser.add_argument('-f', '--file', action='store',
         help='Name of data file')
 parser.add_argument('-c', '--com', action='store',
