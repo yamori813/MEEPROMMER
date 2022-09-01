@@ -187,10 +187,10 @@ parser.add_argument('-s', '--speed', action='store',
 
 def dump_file():
     ser.flushInput()
-    ser.write(bytes("r "+format(args.address,'04x')+" "+
-        format(args.bytes*1024,'04x')+" 10\n", 'ascii'))
-    print(bytes("r "+format(args.address,'04x')+" "+
-        format(args.bytes*1024,'04x')+" 10\n", 'ascii'))
+    cmd = bytes("r,"+format(args.address,'04x')+","+
+        format(args.bytes*1024,'04x')+",10\n", 'ascii')
+    ser.write(cmd)
+    print(cmd)
     eeprom = ser.read(args.bytes*1024)
     if(ser.read(1) != b'\0'):
         print("Error: no Ack")
@@ -206,8 +206,8 @@ def dump_file():
 def verify():
     print("Verifying...")
     ser.flushInput()
-    ser.write(bytes("B "+format(args.address,'04x')+" "+
-        format(args.bytes*1024,'04x')+" 10\n", 'ascii'))
+    ser.write(bytes("B,"+format(args.address,'04x')+","+
+        format(args.bytes*1024,'04x')+",10\n", 'ascii'))
     try:
         fi = open(args.file,'rb')
     except FileNotFoundError:
@@ -240,9 +240,9 @@ def verify():
 
 def read_eeprom():
     ser.flushInput()
-    ser.write(bytes("R "+format(args.address,'04x')+" "+
+    ser.write(bytes("R,"+format(args.address,'04x')+","+
         format(args.address+args.bytes*1024,'04x')+
-        " 10\n", 'ascii'))
+        ",10\n", 'ascii'))
     ser.readline()#remove blank starting line
     for i in range(int(round(args.bytes*1024/16))):
         print(ser.readline().decode('ascii').rstrip())
@@ -261,12 +261,14 @@ def write_eeprom(paged):
         print("Writing from",format(args.address+i*256,'04x'),
               "to",format(args.address+i*256+255,'04x'))
         if paged:
-            ser.write(bytes("w "+format(args.address+i*256,'04x')+
-                " 0100 "+format(args.page_size,'02x')+"\n",'ascii'))
+            cmd = bytes("w,"+format(args.address+i*256,'04x')+
+                ",0100,"+format(args.page_size,'02x')+"\n",'ascii')
         else:
-            ser.write(bytes("w "+format(args.address+i*256,'04x')+
-                " 0100 00\n",'ascii'))
+            cmd = bytes("w "+format(args.address+i*256,'04x')+
+                ",0100,00\n",'ascii')
 
+        ser.write(cmd)
+        print(cmd)
         ser.flushInput()
         ser.write(output)
         #time.sleep(0.08)
@@ -297,10 +299,10 @@ def signature():
 def erace_check():
     print("EPROM erace check:")
     ser.flushInput()
-    ser.write(bytes("r "+format(args.address,'04x')+" "+
-        format(args.bytes*1024,'04x')+" 10\n", 'ascii'))
-    print(bytes("r "+format(args.address,'04x')+" "+
-        format(args.bytes*1024,'04x')+" 10\n", 'ascii'))
+    cmd = bytes("r,"+format(args.address,'04x')+","+
+       format(args.bytes*1024,'04x')+"\n", 'ascii')
+    ser.write(cmd)
+    print(cmd)
     eeprom = ser.read(args.bytes*1024)
     if(ser.read(1) != b'\0'):
         print("Error: no Ack")
