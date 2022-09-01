@@ -154,8 +154,6 @@ parser = argparse.ArgumentParser(
 task = parser.add_mutually_exclusive_group()
 task.add_argument('-w', '--write', dest="cmd", action="store_const",
         const="write", help='Write to EPROM')
-task.add_argument('-W', '--write_paged', dest="cmd", action="store_const",
-        const="write_paged", help='Fast paged write to EPROM')
 task.add_argument('-r', '--read', dest="cmd", action="store_const",
         const="read", help='Read from EPROM as ascii')
 task.add_argument('-d', '--dump', dest="cmd", action="store_const",
@@ -210,7 +208,7 @@ def read_eeprom():
     for i in range(int(round(args.bytes*1024/16))):
         print(ser.readline().decode('ascii').rstrip())
 
-def write_eeprom(paged):
+def write_eeprom():
     import time
 
     fi = open(args.file,'rb')
@@ -223,12 +221,8 @@ def write_eeprom(paged):
         output = fi.read(256)
         print("Writing from",format(args.address+i*256,'04x'),
               "to",format(args.address+i*256+255,'04x'))
-        if paged:
-            cmd = bytes("w,"+format(args.address+i*256,'04x')+
-                ",0100,"+format(args.page_size,'02x')+"\n",'ascii')
-        else:
-            cmd = bytes("w "+format(args.address+i*256,'04x')+
-                ",0100,00\n",'ascii')
+        cmd = bytes("w "+format(args.address+i*256,'04x')+
+              ",0100,00\n",'ascii')
 
         ser.write(cmd)
         print(cmd)
@@ -293,9 +287,7 @@ except serial.serialutil.SerialException:
     sys.exit(1)
 
 if args.cmd == 'write':
-    write_eeprom(False)
-elif args.cmd == 'write_paged':
-    write_eeprom(True)
+    write_eeprom()
 elif args.cmd == 'read':
     read_eeprom()
 elif args.cmd == 'dump':
