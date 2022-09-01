@@ -46,8 +46,7 @@
 #define PORTC_WE   5
 
 //a buffer for bytes to burn
-//#define BUFFERSIZE 1024 
-#define BUFFERSIZE 256
+#define BUFFERSIZE 1024 
 byte buffer[BUFFERSIZE];
 //command buffer for parsing commands
 #define COMMANDSIZE 32
