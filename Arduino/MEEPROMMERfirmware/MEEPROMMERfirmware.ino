@@ -46,14 +46,19 @@
 #define PORTC_WE   5
 
 //a buffer for bytes to burn
-#define BUFFERSIZE 1024 
+//#define BUFFERSIZE 1024 
+#define BUFFERSIZE 256
 byte buffer[BUFFERSIZE];
 //command buffer for parsing commands
 #define COMMANDSIZE 32
 char cmdbuf[COMMANDSIZE];
+int cmdlen;
+
+int delayTime[] = {1, 5, 10, 50, 100, 500, 1, 5, 10, 50};
 
 unsigned int startAddress,endAddress;
 unsigned int lineLength,dataLength;
+unsigned int programType;
 
 //define COMMANDS
 #define NOCOMMAND    0
@@ -236,6 +241,8 @@ void fast_write(unsigned int address, byte data)
 
   //set data bus
   write_data_bus(data);
+  if (programType)
+    delayMicroseconds(2);
 
   //enable chip select
   set_ce(LOW);
@@ -247,21 +254,32 @@ void fast_write(unsigned int address, byte data)
   set_we(LOW);
 
   //wait some time to finish writing
-  delayMicroseconds(1);
+  if (programType < 6)
+    delayMicroseconds(delayTime[programType]);
+  else
+    delay(delayTime[programType]);
 
   //disable write
   set_we(HIGH);
 
   data_bus_input();
+  if (programType)
+    delayMicroseconds(2);
 
   set_oe(LOW);
 
+#if 0
   while(data != read_data_bus()) {
     cyclecount++;
   };
+#endif
+  if (programType)
+    delayMicroseconds(2);
 
   set_oe(HIGH);
   set_ce(HIGH);
+  if (programType)
+    delayMicroseconds(2);
 
 }
 
@@ -278,17 +296,17 @@ void readCommand() {
   for(int i=0; i< COMMANDSIZE;i++) cmdbuf[i] = 0;
   //initialize variables
   char c = ' ';
-  int idx = 0;
+  cmdlen = 0;
   //now read serial data until linebreak or buffer is full
   do {
     if(Serial.available()) {
       c = Serial.read();
-      cmdbuf[idx++] = c;
+      cmdbuf[cmdlen++] = c;
     }
   } 
-  while (c != '\n' && idx < (COMMANDSIZE)); //save the last '\0' for string end
+  while (c != '\n' && cmdlen < (COMMANDSIZE)); //save the last '\0' for string end
   //change last newline to '\0' termination
-  cmdbuf[idx - 1] = 0;
+  cmdbuf[cmdlen - 1] = 0;
 }
 
 //parse the given command by separating command character and parameters
@@ -520,6 +538,10 @@ void loop() {
     break;
   case WRITE_BIN:
     //take care for max buffer size
+    if (cmdlen == 12)
+      programType = 0;
+    else
+      programType = lineLength;
     if(dataLength > 1024) dataLength = 1024;
     endAddress = startAddress + dataLength -1;
     while(bytes < dataLength) {

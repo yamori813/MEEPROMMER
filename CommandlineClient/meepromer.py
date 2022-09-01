@@ -218,11 +218,15 @@ def write_eeprom():
         output = fi.read(256)
         print("Writing from",format(args.address+i*256,'04x'),
               "to",format(args.address+i*256+255,'04x'))
-        cmd = bytes("w "+format(args.address+i*256,'04x')+
-              ",0100,00\n",'ascii')
+        if (args.bytes == 8): # 2764 50ms plus
+            cmd = bytes("w "+format(args.address+i*256,'04x')+
+              ",0100,09\n",'ascii')
+        else: # 27256 100uS plus
+            cmd = bytes("w "+format(args.address+i*256,'04x')+
+              ",0100,05\n",'ascii')
 
+#        print(cmd)
         ser.write(cmd)
-        print(cmd)
         ser.flushInput()
         ser.write(output)
         #time.sleep(0.08)
