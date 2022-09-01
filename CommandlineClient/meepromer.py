@@ -160,8 +160,6 @@ task.add_argument('-r', '--read', dest="cmd", action="store_const",
         const="read", help='Read from EPROM as ascii')
 task.add_argument('-d', '--dump', dest="cmd", action="store_const",
         const="dump", help='Dump EPROM to binary file')
-task.add_argument('-v', '--verify', dest="cmd", action="store_const",
-        const="verify", help='Compare EPROM with file')
 task.add_argument('-V', '--version', dest="cmd", action="store_const",
         const="version", help='Check burner version')
 task.add_argument('-S', '--signature', dest="cmd", action="store_const",
@@ -202,41 +200,6 @@ def dump_file():
         sys.exit(1)
     fo.write(eeprom)
     fo.close()
-
-def verify():
-    print("Verifying...")
-    ser.flushInput()
-    ser.write(bytes("B,"+format(args.address,'04x')+","+
-        format(args.bytes*1024,'04x')+",10\n", 'ascii'))
-    try:
-        fi = open(args.file,'rb')
-    except FileNotFoundError:
-        print("Error: ",args.file," not found, please select a valid file")
-        sys.exit(1)
-    except TypeError:
-        print("Error: No file specified")
-        sys.exit(1)
-
-    fi.seek(args.offset)
-    file = fi.read(args.bytes*1024)
-    eeprom = ser.read(args.bytes*1024)
-    if ser.read(1) != b'\0':
-        print("Error: no EOF received")
-
-    if file != eeprom:
-        print("Not equal")
-        n = 0
-        for i in range(args.bytes*1024):
-            if file[i] != eeprom[i]:
-                n+=1
-        print(n,"differences found")
-        sys.exit(1)
-    else:
-        print("Ok")
-        sys.exit(0)
-    if(ser.read(1) != b'\0'):
-        print("Error: no Ack")
-        sys.exit(1)
 
 def read_eeprom():
     ser.flushInput()
@@ -333,13 +296,10 @@ if args.cmd == 'write':
     write_eeprom(False)
 elif args.cmd == 'write_paged':
     write_eeprom(True)
-    #verify()
 elif args.cmd == 'read':
     read_eeprom()
 elif args.cmd == 'dump':
     dump_file()
-elif args.cmd == 'verify':
-    verify()
 elif args.cmd == 'unlock':
     unlock();
 elif args.cmd == 'list':
