@@ -1,0 +1,48 @@
+typically command this format
+
+R,0000,0100,10\n
+
+sparate by ',' charactor. last charactor is LF.
+
+command, fast argument(4byte)l, second argument(4byte), therd argument(2byte).
+
+A command:
+-----------
+
+set Address at 74HC595. Only valid fast value at Address. This command
+can check 74HC595.
+
+
+R command:
+-----------
+
+read data from EPROM by ascii. fast value is start address. second
+value is data length. therd value is line length.
+
+
+r command:
+-----------
+
+read data from EPROM by binary. fast value is start address. second
+value is data length.
+
+w command:
+-----------
+
+write date to EPROM by binary. fast value is data address. second
+value is data length. length must 0100(256).
+
+00 = 1us, 01 = 5us, 02 = 10us, 03 = 50us, 04 = 100us, 05 = 500us
+06 = 1ms, 07 = 5ms, 08 = 10ms, 09 = 50ms
+
+V command:
+-----------
+
+Get firmware version string. Only valid command paramerter.
+
+
+S command:
+-----------
+
+read signature from EPROM. Only valid command parameter. signature support
+ony 27256 or after. You must set 12V at A9 line before this command.
