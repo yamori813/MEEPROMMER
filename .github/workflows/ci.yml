@@ -25,6 +25,6 @@ jobs:
       run: pio lib install
     - name: Run PlatformIO
       run: |
-        cd arduino
+        cd Arduino
         platformio run
 
